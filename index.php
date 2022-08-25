@@ -21,9 +21,6 @@ session_start();
     
 
 <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="assets/dist/css/mobile.css" rel="stylesheet">
-
-
     
   </head>
   <body>
@@ -44,7 +41,7 @@ session_start();
     </div>
 
     <footer class="pt-3 mt-4 text-muted border-top">
-      &copy; 2022
+      &copy; 2022 - WOM Finance Technical Test - Management Trainee Information Technology
     </footer>
   </div>
 </main>

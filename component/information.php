@@ -85,7 +85,17 @@
                 </div>
             </div>
             <div class="col-12">
-                <button class="btn btn-outline-dark" type="submit">Order</button>
+
+            <?php
+            if(empty($_SESSION['keranjang_belanja'])) {  ?>
+
+            <button class="btn btn-lg btn-outline-dark" type="submit" disabled>Order</button>
+
+                <?php } else { ?>
+            
+            <button class="btn btn-lg btn-outline-dark" type="submit">Order</button>
+            
+                <?php } ?>
             </div>
         </form>
 

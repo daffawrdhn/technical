@@ -38,7 +38,7 @@ require 'auth.php';
       if(isset($_GET['halaman'])){
         $halaman = $_GET['halaman'];
         switch ($halaman) {
-            case 'produk':
+            case 'products':
                 include "component/products.php";
                 break;
             case 'cart':
@@ -47,8 +47,11 @@ require 'auth.php';
             case 'order':
                 include "component/order.php";
                 break;
+            case 'detail':
+                include "component/detail.php";
+                break;
             default:
-            echo "<center><h3>Maaf. Halaman tidak di temukan !</h3></center>";
+            echo "<center><h3>404 Page not found !</h3></center>";
             break;
         }
     }else {
@@ -58,7 +61,7 @@ require 'auth.php';
     ?>
 
     <footer class="pt-3 mt-4 text-muted border-top">
-      &copy; 2022
+      &copy; 2022 - WOM Finance Technical Test - Management Trainee Information Technology
     </footer>
   </div>
 </main>

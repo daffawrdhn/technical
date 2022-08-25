@@ -3,8 +3,41 @@
 // echo '<pre>' . print_r($_SESSION, TRUE) . '</pre>';
 
 if (isset($_GET['kode_produk']) && isset($_GET['jumlah'])) {
+
+
+    $k = array();
     $kode_produk=$_GET['kode_produk'];
     $jumlah=$_GET['jumlah'];
+
+
+    $sql = "SELECT kode_produk,stok FROM products WHERE kode_produk='$kode_produk'";
+    $result = mysqli_query($conn, $sql);
+    if ($result->num_rows > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $kp = $row['kode_produk'];
+        $st = $row['stok'];
+
+        array_push($k,$kp);
+
+        foreach($k as $value){
+            if($kode_produk != $value){
+                header("Location: shop.php?halaman=products");
+            }
+        }
+    } else {
+        header("Location: shop.php?halaman=products");
+    }
+
+    if($jumlah > $st){
+        $jumlah = $st;
+        echo "<script>alert('Melebihi stok barang!')</script>";
+    } 
+
+    if($jumlah <= 0) {
+        $jumlah = 1;
+        echo "<script>alert('Dibawah stok barang!')</script>";
+    }
+
     $sql= "select * from products where kode_produk='$kode_produk'";
     $query = mysqli_query($conn,$sql);
     $data = mysqli_fetch_array($query);
@@ -90,6 +123,8 @@ switch($aksi){
                 $sqlb = "UPDATE products SET stok=stok - '$terbeli' WHERE kode_produk = '$kode'";
                 $resultb = mysqli_query($conn, $sqlb);
             }
+        } else {
+            echo "<script>Tidak ada produk dalam keranjang.')</script>";
         }
         $t = array_sum($total); $j = implode(", ", $jumlah); $p = implode(", ", $prod); $a = implode(" ",$alamat); $pe = implode(" ",$penerima); $e = $_SESSION['email'];
 
@@ -100,7 +135,7 @@ switch($aksi){
             if ($resultb) {
                 $_SESSION['keranjang_belanja'] = array();
                 echo "<script>alert('Selamat, order berhasil!')</script>";
-                header("Location: shop.php");
+                header("Location: shop.php?halaman=order");
             } else {
                 echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
             }
@@ -147,12 +182,24 @@ switch($aksi){
                         <td><?php echo $item["nama_produk"]; ?></td>
                         <td>Rp. <?php echo number_format($item["harga"],0,',','.');?> </td>
                         <td>
-                        <input type="number" min="1" max="<?php echo $data["stok"]; ?>" value="<?php echo $item["jumlah"]; ?>" class="form-control" id="jumlah<?php echo $no; ?>" name="jumlah[]" >
+
+                        <input type="text" value="<?php echo $item["kode_produk"]; ?>" id="kode<?php echo $no; ?>" name="kode[]" hidden>
+                        <input type="number" min="1" max="<?php echo $data["stok"]; ?>" value="<?php echo $item["jumlah"]; ?>" class="form-control" id="jumlah<?php echo $no; ?>" name="jumlah[]">
+                        
                         <script>   
                             
                             $("#jumlah<?php echo $no; ?>").bind('change', function () {
                                 var jumlah<?php echo $no; ?>=$("#jumlah<?php echo $no; ?>").val();
+                                var kode<?php echo $no; ?>=$("#kode<?php echo $no; ?>").val();
+
                                 $("#jumlaha<?php echo $no; ?>").val(jumlah<?php echo $no; ?>);
+
+                                 // shop.php?halaman=cart&kode_produk=T01&aksi=tambah_produk&jumlah=1
+
+                                location.href = "shop.php?halaman=cart&kode_produk=" + kode<?php echo $no; ?> + "&aksi=tambah_produk&jumlah=" + jumlah<?php echo $no; ?>;
+                                
+                                // alert("The variable named x1 has value:  " + kode<?php echo $no; ?>);
+
                             });
                             $("#jumlah<?php echo $no; ?>").keydown(function(event) { 
                                 return false;
@@ -169,7 +216,7 @@ switch($aksi){
                                 <input type="hidden" name="aksi"  value="update" class="form-control">
                                 <input type="hidden" name="halaman"  value="cart" class="form-control">
                                 <input type="hidden" name="jumlah" value="<?php echo $item["jumlah"]; ?>" id="jumlaha<?php echo $no; ?>" value="" class="form-control">
-                                <input type="submit" class="btn btn-warning btn-xs" value="Update">
+                                <input type="submit" class="btn btn-warning btn-xs" value="Update" hidden>
                             </form>
                             <a href="shop.php?halaman=cart&kode_produk=<?php echo $item['kode_produk']; ?>&aksi=hapus" class="btn btn-danger btn-xs" role="button">Delete</a>
                         </td>
@@ -181,8 +228,23 @@ switch($aksi){
                 </tbody>
             </table>
         </div>
+    
+        <?php
+            if(empty($_SESSION['keranjang_belanja'])) {  ?>
 
-    <h3 class="text-end">Total Pembayaran Rp. <?php echo number_format($total,0,',','.');?> </h3>
+                <div class="row mt-3">
+                    <div class="col-sm-12 d-flex flex-row-reverse">
+                         <a class="btn btn-outline-dark" role="button" href="shop.php">Browse Product</a>
+                    </div>
+                </div>
+
+                <?php } else { ?>
+            
+                    <h3 class="text-end">Total Pembayaran Rp. <?php echo number_format($total,0,',','.');?> </h3>
+
+            
+                <?php } ?>
+
 </div>
       </div>
 </div>

@@ -1,9 +1,4 @@
 <?php
-
-if(!isset($_SESSION["keranjang_belanja"])){
-    $_SESSION["keranjang_belanja"] = null;
-}
-
 // echo '<pre>' . print_r($_SESSION, TRUE) . '</pre>';
 
 $email = $_SESSION['email'];
@@ -21,11 +16,11 @@ $result = $conn->query($query);
         <h1 class="display-5 fw-bold">Orders</h1>
         <p class="col-md-8 fs-4">Order detail information</p>
 
-          <div class="table-responsive">
+          <div class="table-responsive pb-3">
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
+                  <th scope="col">No. Order</th>
                   <th scope="col">Produk</th>
                   <th scope="col">Jumlah</th>
                   <th scope="col">Alamat</th>
@@ -49,8 +44,6 @@ $result = $conn->query($query);
                 </tr>
 
                 <?php 
-                } if(!isset($row)){
-                  echo '<p class="col-md-8 fs-4">No order, please make one</p>';
                 } ?>
 
               </tbody>
