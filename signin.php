@@ -20,6 +20,9 @@ if (isset($_POST['signin'])) {
     $result = mysqli_query($conn, $sql);
     if ($result->num_rows > 0) {
         $row = mysqli_fetch_assoc($result);
+        $_SESSION['namadepan'] = $row['nama_depan'];
+        $_SESSION['namatengah'] = $row['nama_tengah'];
+        $_SESSION['namabelakang'] = $row['nama_belakang'];
         $_SESSION['email'] = $row['email'];
         header("Location: index.php");
     } else {

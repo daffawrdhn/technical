@@ -21,6 +21,8 @@ session_start();
     
 
 <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/dist/css/mobile.css" rel="stylesheet">
+
 
     
   </head>
@@ -36,7 +38,7 @@ session_start();
     <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Local pawn shop</h1>
-        <p class="col-md-8 fs-4">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio molestias totam, rem quisquam maxime sint, minus modi magnam necessitatibus voluptas dolorum voluptate, itaque consectetur molestiae repellendus a ipsum omnis facere?</p>
+        <p class="col-md-8 fs-4">selling black stuff with limited stock only, consider to buy this stuff soon.</p>
         <a class="btn btn-dark btn-lg" role="button" href="shop.php">Browse Product</a>
       </div>
     </div>

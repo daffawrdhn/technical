@@ -1,4 +1,7 @@
 <?php
+
+// echo '<pre>' . print_r($_SESSION, TRUE) . '</pre>';
+
 if (isset($_GET['kode_produk']) && isset($_GET['jumlah'])) {
     $kode_produk=$_GET['kode_produk'];
     $jumlah=$_GET['jumlah'];
@@ -59,86 +62,131 @@ switch($aksi){
             }
         }
     break;
+
+    case "order":
+
+        $penerima = array("namadepan"=>$_GET['namadepan'], "namatengah"=>$_GET['namatengah'], "namabelakang"=>$_GET['namabelakang']);
+        $alamat = array("address1"=>$_GET['address1'], "address2"=>$_GET['address2'], "Kota " ,"city"=>$_GET['city'], "Provinsi " , "state"=>$_GET['state'], "Kode Pos " , "zip"=>$_GET['zip']);
+
+        $jumlah = array();
+        $prod = array();
+        $total = array();
+
+        if(isset($_SESSION["keranjang_belanja"])){
+            $outer_arr = $_SESSION["keranjang_belanja"];
+            foreach($outer_arr as $key => $val) {
+                // $sef = print($key." ,"); // "kanye"
+
+                $sum = $val['jumlah'] * $val['harga'];
+                $pcs = strval($val['jumlah']) . ' ' . "Pcs";
+
+                array_push($jumlah, $pcs);
+                array_push($prod, $val['nama_produk']);
+                array_push($total, $sum);
+
+                $terbeli = $val['jumlah'];
+                $kode = $val['kode_produk'];
+
+                $sqlb = "UPDATE products SET stok=stok - '$terbeli' WHERE kode_produk = '$kode'";
+                $resultb = mysqli_query($conn, $sqlb);
+            }
+        }
+        $t = array_sum($total); $j = implode(", ", $jumlah); $p = implode(", ", $prod); $a = implode(" ",$alamat); $pe = implode(" ",$penerima); $e = $_SESSION['email'];
+
+            $sqla = "INSERT INTO orders (produk, jumlah, alamat, penerima, email, total) VALUES ('$p', '$j', '$a', '$pe', '$e' , '$t')";
+            $resulta = mysqli_query($conn, $sqla);
+
+
+            if ($resultb) {
+                $_SESSION['keranjang_belanja'] = array();
+                echo "<script>alert('Selamat, order berhasil!')</script>";
+                header("Location: shop.php");
+            } else {
+                echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
+            }
+        
+
+    break;
 }
+
 ?>
 
 <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Backdoor - Cart</h1>
         <div class="row">
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>No</th>
-            <th>Kode</th>
-            <th width="40%">Nama</th>
-            <th>Harga</th>
-            <th width="10%">QTY</th>
-            <th>Sub Total</th>
-            <th>Aksi</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-            $no=0;
-            $sub_total=0;
-            $total=0;
-            $total_berat=0;
-            if(!empty($_SESSION["keranjang_belanja"])):
-            foreach ($_SESSION["keranjang_belanja"] as $item):
-                $no++;
-                $sub_total = $item["jumlah"]*$item['harga'];
-                $total+=$sub_total;
-        ?>
-            <input type="hidden" name="kode_produk[]" class="kode_produk" value="<?php echo $item["kode_produk"]; ?>"/>
-            <tr>
-                <td><?php echo $no; ?></td>
-                <td><?php echo $item["kode_produk"]; ?></td>
-                <td><?php echo $item["nama_produk"]; ?></td>
-                <td>Rp. <?php echo number_format($item["harga"],0,',','.');?> </td>
-                <td>
-                <input type="number" min="1" value="<?php echo $item["jumlah"]; ?>" class="form-control" id="jumlah<?php echo $no; ?>" name="jumlah[]" >
-                <script>   
-                    
-                    $("#jumlah<?php echo $no; ?>").bind('change', function () {
-                        var jumlah<?php echo $no; ?>=$("#jumlah<?php echo $no; ?>").val();
-                        $("#jumlaha<?php echo $no; ?>").val(jumlah<?php echo $no; ?>);
-                    });
-                    $("#jumlah<?php echo $no; ?>").keydown(function(event) { 
-                        return false;
-                    });
-                    
-                </script>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Kode</th>
+                    <th width="40%">Nama</th>
+                    <th>Harga</th>
+                    <th width="10%">QTY</th>
+                    <th>Sub Total</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                    $no=0;
+                    $sub_total=0;
+                    $total=0;
+                    $total_berat=0;
+                    if(!empty($_SESSION["keranjang_belanja"])):
+                    foreach ($_SESSION["keranjang_belanja"] as $item):
+                        $no++;
+                        $sub_total = $item["jumlah"]*$item['harga'];
+                        $total+=$sub_total;
+                ?>
+                    <input type="hidden" name="kode_produk[]" class="kode_produk" value="<?php echo $item["kode_produk"]; ?>"/>
+                    <tr>
+                        <td><?php echo $no; ?></td>
+                        <td><?php echo $item["kode_produk"]; ?></td>
+                        <td><?php echo $item["nama_produk"]; ?></td>
+                        <td>Rp. <?php echo number_format($item["harga"],0,',','.');?> </td>
+                        <td>
+                        <input type="number" min="1" max="<?php echo $data["stok"]; ?>" value="<?php echo $item["jumlah"]; ?>" class="form-control" id="jumlah<?php echo $no; ?>" name="jumlah[]" >
+                        <script>   
+                            
+                            $("#jumlah<?php echo $no; ?>").bind('change', function () {
+                                var jumlah<?php echo $no; ?>=$("#jumlah<?php echo $no; ?>").val();
+                                $("#jumlaha<?php echo $no; ?>").val(jumlah<?php echo $no; ?>);
+                            });
+                            $("#jumlah<?php echo $no; ?>").keydown(function(event) { 
+                                return false;
+                            });
+                            
+                        </script>
 
-                </td>
-                <td>Rp. <?php echo number_format($sub_total,0,',','.');?> </td>
+                        </td>
+                        <td>Rp. <?php echo number_format($sub_total,0,',','.');?> </td>
 
-                <td>
-                    <form method="get">
-                        <input type="hidden" name="kode_produk"  value="<?php echo $item['kode_produk']; ?>" class="form-control">
-                        <input type="hidden" name="aksi"  value="update" class="form-control">
-                        <input type="hidden" name="halaman"  value="cart" class="form-control">
-                        <input type="hidden" name="jumlah" value="<?php echo $item["jumlah"]; ?>" id="jumlaha<?php echo $no; ?>" value="" class="form-control">
-                        <input type="submit" class="btn btn-warning btn-xs" value="Update">
-                    </form>
-                    <a href="shop.php?halaman=cart&kode_produk=<?php echo $item['kode_produk']; ?>&aksi=hapus" class="btn btn-danger btn-xs" role="button">Delete</a>
-                </td>
-            </tr>
-        <?php 
-            endforeach;
-            endif;
-        ?>
-        </tbody>
-    </table>
+                        <td>
+                            <form method="get">
+                                <input type="hidden" name="kode_produk"  value="<?php echo $item['kode_produk']; ?>" class="form-control">
+                                <input type="hidden" name="aksi"  value="update" class="form-control">
+                                <input type="hidden" name="halaman"  value="cart" class="form-control">
+                                <input type="hidden" name="jumlah" value="<?php echo $item["jumlah"]; ?>" id="jumlaha<?php echo $no; ?>" value="" class="form-control">
+                                <input type="submit" class="btn btn-warning btn-xs" value="Update">
+                            </form>
+                            <a href="shop.php?halaman=cart&kode_produk=<?php echo $item['kode_produk']; ?>&aksi=hapus" class="btn btn-danger btn-xs" role="button">Delete</a>
+                        </td>
+                    </tr>
+                <?php 
+                    endforeach;
+                    endif;
+                ?>
+                </tbody>
+            </table>
+        </div>
+
     <h3 class="text-end">Total Pembayaran Rp. <?php echo number_format($total,0,',','.');?> </h3>
 </div>
       </div>
 </div>
 
-<div class="p-5 mb-4 bg-light rounded-3">
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Personal Information</h1>
-        <p class="col-md-8 fs-4">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio molestias totam, rem quisquam maxime sint, minus modi magnam necessitatibus voluptas dolorum voluptate, itaque consectetur molestiae repellendus a ipsum omnis facere?</p>
-        <a class="btn btn-dark btn-lg" role="button" href="shop.php">Browse Product</a>
-      </div>
-    </div>
+<?php
+ include 'information.php';
+?>
