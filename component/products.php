@@ -18,7 +18,17 @@
                     <h5><a class="text-dark text-decoration-none" href="shop.php?halaman=detail&kode_produk=<?php echo $data['kode_produk'];?>"><?php echo $data['nama'];?></a></h5>
                     <h6>Rp. <?php echo number_format($data['harga'],2,',','.'); ?> </h6>
                     <p>Sisa <?php echo $data['stok'];?> Pcs</p>
-                    <p><a href="shop.php?halaman=cart&kode_produk=<?php echo $data['kode_produk'];?>&aksi=tambah_produk&jumlah=1" class="btn btn-outline-dark" role="button" target="_blank">Add to Cart</a></p>
+
+                    <?php
+                    if($data['stok'] <= 0){?>
+                        
+                        <p><a href="shop.php?halaman=cart&kode_produk=<?php echo $data['kode_produk'];?>&aksi=tambah_produk&jumlah=1" class="btn btn-outline-dark disabled" role="button" disabled>Add to Cart</a></p>
+                    
+                        <?php } else { ?>
+                    
+                        <p><a href="shop.php?halaman=cart&kode_produk=<?php echo $data['kode_produk'];?>&aksi=tambah_produk&jumlah=1" class="btn btn-outline-dark" role="button">Add to Cart</a></p>
+
+                    <?php } ?>
                 </div>
             </div>
         </div>

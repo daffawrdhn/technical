@@ -58,20 +58,26 @@ if (isset($_GET['aksi'])) {
 
 switch($aksi){	
     case "tambah_produk":
-    $itemArray = array($kode_produk=>array('kode_produk'=>$kode_produk,'nama_produk'=>$nama_produk,'jumlah'=>$jumlah,'harga'=>$harga,'stok'=>$stok));
-    if(!empty($_SESSION["keranjang_belanja"])) {
-        if(in_array($data['kode_produk'],array_keys($_SESSION["keranjang_belanja"]))) {
-            foreach($_SESSION["keranjang_belanja"] as $k => $v) {
-                if($data['kode_produk'] == $k) {
-                    $_SESSION["keranjang_belanja"] = array_merge($_SESSION["keranjang_belanja"],$itemArray);
-                }
-            }
-        } else {
+        foreach($k as $value){
+            if($kode_produk != $value || $stok <= 0){
+                header("Location: shop.php?halaman=products");
+            } else {
+                $itemArray = array($kode_produk=>array('kode_produk'=>$kode_produk,'nama_produk'=>$nama_produk,'jumlah'=>$jumlah,'harga'=>$harga,'stok'=>$stok));
+                if(!empty($_SESSION["keranjang_belanja"])) {
+                    if(in_array($data['kode_produk'],array_keys($_SESSION["keranjang_belanja"]))) {
+                        foreach($_SESSION["keranjang_belanja"] as $k => $v) {
+                         if($data['kode_produk'] == $k) {
+                             $_SESSION["keranjang_belanja"] = array_merge($_SESSION["keranjang_belanja"],$itemArray);
+                            }
+                        }
+             } else {
             $_SESSION["keranjang_belanja"] = array_merge($_SESSION["keranjang_belanja"],$itemArray);
         }
     } else {
         $_SESSION["keranjang_belanja"] = $itemArray;
     }
+            }
+        }
     break;
     //Fungsi untuk menghapus item dalam cart
     case "hapus":
@@ -97,7 +103,6 @@ switch($aksi){
     break;
 
     case "order":
-
         $penerima = array("namadepan"=>$_GET['namadepan'], "namatengah"=>$_GET['namatengah'], "namabelakang"=>$_GET['namabelakang']);
         $alamat = array("address1"=>$_GET['address1'], "address2"=>$_GET['address2'], "Kota " ,"city"=>$_GET['city'], "Provinsi " , "state"=>$_GET['state'], "Kode Pos " , "zip"=>$_GET['zip']);
 

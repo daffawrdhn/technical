@@ -35,8 +35,16 @@ session_start();
     <div class="p-5 mb-4 bg-light rounded-3">
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Local pawn shop</h1>
-        <p class="col-md-8 fs-4">selling black stuff with limited stock only, consider to buy this stuff soon.</p>
-        <a class="btn btn-dark btn-lg" role="button" href="shop.php">Browse Product</a>
+        <p class="col-md-8 fs-4">Selling cool black stuff with limited stock only, please consider to buy this stuff A$AP.</p>
+
+
+      <?php if(isset($_SESSION['email'])){ ?>
+        <a class="btn btn-dark btn-lg" role="button" href="shop.php?halaman=products">Browse Product</a>
+      <?php } else { ?>
+        <a class="btn btn-dark btn-lg" role="button" href="signup.php">Join Now</a>
+      <?php } ?>
+
+
       </div>
     </div>
 
