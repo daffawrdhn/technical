@@ -30,12 +30,12 @@ if (isset($_GET['kode_produk']) && isset($_GET['jumlah'])) {
 
     if($jumlah > $st){
         $jumlah = $st;
-        echo "<script>alert('Melebihi stok barang!')</script>";
+        echo "<script>alert('above product stock!')</script>";
     } 
 
     if($jumlah <= 0) {
         $jumlah = 1;
-        echo "<script>alert('Dibawah stok barang!')</script>";
+        echo "<script>alert('below product stock!')</script>";
     }
 
     $sql= "select * from products where kode_produk='$kode_produk'";
@@ -139,10 +139,9 @@ switch($aksi){
 
             if ($resultb) {
                 $_SESSION['keranjang_belanja'] = array();
-                echo "<script>alert('Selamat, order berhasil!')</script>";
                 header("Location: shop.php?halaman=order");
             } else {
-                echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
+                echo "<script>alert('Woops! Order error!.')</script>";
             }
         
 
@@ -160,12 +159,12 @@ switch($aksi){
                 <thead>
                 <tr>
                     <th>No</th>
-                    <th>Kode</th>
-                    <th width="40%">Nama</th>
-                    <th>Harga</th>
+                    <th>SKU</th>
+                    <th width="40%">Product Name</th>
+                    <th>Price</th>
                     <th width="10%">QTY</th>
                     <th>Sub Total</th>
-                    <th>Aksi</th>
+                    <th>Menu</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -183,8 +182,8 @@ switch($aksi){
                     <input type="hidden" name="kode_produk[]" class="kode_produk" value="<?php echo $item["kode_produk"]; ?>"/>
                     <tr>
                         <td><?php echo $no; ?></td>
-                        <td><?php echo $item["kode_produk"]; ?></td>
-                        <td><?php echo $item["nama_produk"]; ?></td>
+                        <td><a class="text-dark" style="text-decoration: none; text-color: black;" href="shop.php?halaman=detail&kode_produk=<?php echo $item["kode_produk"]; ?>"><?php echo $item["kode_produk"]; ?></a></td>
+                        <td><a class="text-dark" style="text-decoration: none; text-color: black;" href="shop.php?halaman=detail&kode_produk=<?php echo $item["kode_produk"]; ?>"><?php echo $item["nama_produk"]; ?></a></td>
                         <td>Rp. <?php echo number_format($item["harga"],0,',','.');?> </td>
                         <td>
 
@@ -199,11 +198,9 @@ switch($aksi){
 
                                 $("#jumlaha<?php echo $no; ?>").val(jumlah<?php echo $no; ?>);
 
-                                 // shop.php?halaman=cart&kode_produk=T01&aksi=tambah_produk&jumlah=1
 
                                 location.href = "shop.php?halaman=cart&kode_produk=" + kode<?php echo $no; ?> + "&aksi=tambah_produk&jumlah=" + jumlah<?php echo $no; ?>;
                                 
-                                // alert("The variable named x1 has value:  " + kode<?php echo $no; ?>);
 
                             });
                             $("#jumlah<?php echo $no; ?>").keydown(function(event) { 
@@ -245,7 +242,7 @@ switch($aksi){
 
                 <?php } else { ?>
             
-                    <h3 class="text-end">Total Pembayaran Rp. <?php echo number_format($total,0,',','.');?> </h3>
+                    <h3 class="text-end">Total Cost Rp. <?php echo number_format($total,0,',','.');?> </h3>
 
             
                 <?php } ?>

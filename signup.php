@@ -25,17 +25,17 @@ if (isset($_POST['signup'])) {
                     VALUES ('$email', '$namadepan', '$namatengah', '$namabelakang', '$password')";
             $result = mysqli_query($conn, $sql);
             if ($result) {
-                echo "<script>alert('Selamat, registrasi berhasil!')</script>";
+                echo "<script>alert('Congratulation, Registration Complete!')</script>";
                 header("Location: signin.php");
             } else {
-                echo "<script>alert('Woops! Terjadi kesalahan.')</script>";
+                echo "<script>alert('Woops! Registration error!.')</script>";
             }
         } else {
-            echo "<script>alert('Woops! Email Sudah Terdaftar.')</script>";
+            echo "<script>alert('Woops! Email already in use.')</script>";
         }
          
     } else {
-        echo "<script>alert('Password Tidak Sesuai')</script>";
+        echo "<script>alert('Password no recognize')</script>";
     }
 }
  

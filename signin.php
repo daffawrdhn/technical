@@ -26,7 +26,7 @@ if (isset($_POST['signin'])) {
         $_SESSION['email'] = $row['email'];
         header("Location: index.php");
     } else {
-        echo "<script>alert('Email atau password Anda salah. Silahkan coba lagi!')</script>";
+        echo "<script>alert('Incorrect Email or Password!')</script>";
     }
 }
  
