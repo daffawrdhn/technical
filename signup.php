@@ -14,8 +14,12 @@ if (isset($_POST['signup'])) {
     $namatengah = $_POST['namatengah'];
     $namabelakang = $_POST['namabelakang'];
 
-    $email = $_POST['email'];
-    $password = md5($_POST['password']);
+    if (empty($namadepan)|| empty($namatengah) || empty($namabelakang)) {
+      echo "<script>alert('Please enter your name.')</script>";
+
+    } else {
+      $email = $_POST['email'];
+      $password = md5($_POST['password']);
  
     if ($password == $password) {
         $sql = "SELECT * FROM users WHERE email='$email'";
@@ -37,6 +41,8 @@ if (isset($_POST['signup'])) {
     } else {
         echo "<script>alert('Password no recognize')</script>";
     }
+    }
+
 }
  
 ?>
